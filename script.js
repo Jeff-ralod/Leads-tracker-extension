@@ -62,7 +62,10 @@ function render(leads) {
     for(let i = 0; i < leads .length; i++){
         listItems += `
             <li>
-                <a target = '_blank' href = "${leads}"> ${leads}</a>
+                <a target = '_blank' href = "${leads}"> 
+                    <i class="fa-solid fa-link"></i>
+                    ${leads}
+                </a>
             </li>
         `
     }
