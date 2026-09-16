@@ -1,18 +1,23 @@
-//* Building the DOM
-const inputEl = document.getElementById("input-el");
-const btn = document.getElementById("btn");
-const tabBtn = document.getElementById("tab-btn");
-const deleteBtn = document.getElementById("delete-btn");
-const list = document.getElementById("list");
-let myLeads = [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js"
+import { getDatabase,
+            ref,
+            push,
+            onValue
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-database.js"
 
-const leadsFromLocalStorage = JSON.parse(localStorage.getItem("myLeads"));
-
-if(leadsFromLocalStorage){
-    myLeads = leadsFromLocalStorage;
-    render(myLeads)
+const firebaseConfig = {
+    databaseURL: "https://leads-tracker-app-acb5c-default-rtdb.europe-west1.firebasedatabase.app/"
 }
 
+const app = initializeApp(firebaseConfig)
+const database = getDatabase(app)
+
+//* Building the DOM
+const inputEl = document.getElementById("input-el")
+const btn = document.getElementById("btn")
+const deleteBtn = document.getElementById("delete-btn")
+const list = document.getElementById("list")
+const referenceInDB = ref(database, "leads")
 
 
 /* 
@@ -22,31 +27,14 @@ if(leadsFromLocalStorage){
 */  
 
 btn.addEventListener("click", () => {
-    myLeads.push(inputEl.value);
+    push(referenceInDB, inputEl.value);
     inputEl.value = "";
-    localStorage.setItem("myLeads", JSON.stringify(myLeads));
-    console.log("button clicked!")
-    render(myLeads)
-    
-});
-
-// TODO:
-tabBtn.addEventListener("click", () => {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    console.log("tabBtn clicked")
-    myLeads.push(tabs[0].url)
-    localStorage.setItem("myLeads", JSON.stringify(myLeads))
-    render(myLeads)
-    })
     
 });
 
 // TODO:
 deleteBtn.addEventListener("dblclick", () => {
-    localStorage.clear();
-    myLeads = [];
-    render(myLeads)
-    console.log("delete button clicked")
+    
 });
 
 
@@ -62,12 +50,18 @@ function render(leads) {
     for(let i = 0; i < leads .length; i++){
         listItems += `
             <li>
-                <a target = '_blank' href = "${leads}"> 
+                <a target = '_blank' href = "${leads[i]}"> 
                     <i class="fa-solid fa-link"></i>
-                    ${leads}
+                    ${leads[i]}
                 </a>
             </li>
         `
     }
     list.innerHTML = listItems;
 }
+
+onValue(referenceInDB, function(snapshot) {
+    const snapshotValues = snapshot.val()
+    const leads = Object.values(snapshotValues)
+    render(leads)
+})
