@@ -2,7 +2,8 @@ import { initializeApp } from "firebase/app"
 import { getDatabase,
             ref,
             push,
-            onValue
+            onValue,
+            remove
 } from "firebase/database"
 
 const firebaseConfig = {
@@ -34,7 +35,8 @@ btn.addEventListener("click", () => {
 
 // TODO:
 deleteBtn.addEventListener("dblclick", () => {
-    
+    remove(referenceInDB)
+    list.innerHTML = ""
 });
 
 
@@ -61,7 +63,10 @@ function render(leads) {
 }
 
 onValue(referenceInDB, function(snapshot) {
-    const snapshotValues = snapshot.val()
-    const leads = Object.values(snapshotValues)
-    render(leads)
+    const snapshotDoesExists = snapshot.exists()
+    if(snapshotDoesExists){
+        const snapshotValues = snapshot.val()
+        const leads = Object.values(snapshotValues)
+        render(leads)
+    }
 })
