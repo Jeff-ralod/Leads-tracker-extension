@@ -1,3 +1,4 @@
+console.log("JEFF'S SCRIPT IS RUNNING")
 import { initializeApp } from "firebase/app"
 import { getDatabase,
             ref,
@@ -17,6 +18,7 @@ const database = getDatabase(app)
 const inputEl = document.getElementById("input-el")
 const btn = document.getElementById("btn")
 const deleteBtn = document.getElementById("delete-btn")
+console.log(deleteBtn)
 const list = document.getElementById("list")
 const referenceInDB = ref(database, "leads")
 
@@ -35,9 +37,10 @@ btn.addEventListener("click", () => {
 
 // TODO:
 deleteBtn.addEventListener("dblclick", () => {
+    console.log("Button clicked!")
     remove(referenceInDB)
     list.innerHTML = ""
-});
+})
 
 
 /* 

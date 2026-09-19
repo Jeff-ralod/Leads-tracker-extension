@@ -10463,6 +10463,10 @@
     thenablePushRef.catch = promise.then.bind(promise, void 0);
     return thenablePushRef;
   }
+  function remove(ref2) {
+    validateWritablePath("remove", ref2._path);
+    return set(ref2, null);
+  }
   function set(ref2, value) {
     ref2 = getModularInstance(ref2);
     validateWritablePath("set", ref2._path);
@@ -10762,6 +10766,7 @@
   registerDatabase();
 
   // script.js
+  console.log("JEFF'S SCRIPT IS RUNNING");
   var firebaseConfig = {
     databaseURL: "https://leads-tracker-app-acb5c-default-rtdb.europe-west1.firebasedatabase.app/"
   };
@@ -10770,6 +10775,7 @@
   var inputEl = document.getElementById("input-el");
   var btn = document.getElementById("btn");
   var deleteBtn = document.getElementById("delete-btn");
+  console.log(deleteBtn);
   var list = document.getElementById("list");
   var referenceInDB = ref(database, "leads");
   btn.addEventListener("click", () => {
@@ -10777,6 +10783,9 @@
     inputEl.value = "";
   });
   deleteBtn.addEventListener("dblclick", () => {
+    console.log("Button clicked!");
+    remove(referenceInDB);
+    list.innerHTML = "";
   });
   function render(leads) {
     let listItems = "";
@@ -10793,9 +10802,12 @@
     list.innerHTML = listItems;
   }
   onValue(referenceInDB, function(snapshot) {
-    const snapshotValues = snapshot.val();
-    const leads = Object.values(snapshotValues);
-    render(leads);
+    const snapshotDoesExists = snapshot.exists();
+    if (snapshotDoesExists) {
+      const snapshotValues = snapshot.val();
+      const leads = Object.values(snapshotValues);
+      render(leads);
+    }
   });
 })();
 //! this function is for rendering leads in the extension
