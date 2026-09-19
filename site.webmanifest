@@ -4,7 +4,8 @@
   "description": "Save, organize, and revisit useful links.",
   "start_url": "./",
   "scope": "./",
-  "display": "standalone",
+  "display": "fullscreen",
+  "display_override": ["fullscreen", "standalone"],
   "background_color": "#ffffff",
   "theme_color": "#1f2a44",
   "icons": [
